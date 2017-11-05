@@ -1,0 +1,38 @@
+---
+
+- hosts: '{{host_name}}'
+  vars:
+    docker_name: server-running-test
+    server_api_test_folder: server-perf-test
+    server_api_test_file: '{{server_api_test_folder}}.tar.gz'
+    node_process: node
+  tasks:
+    # - name: restart the docker container
+    #   command: 'docker restart {{docker_name}}'
+    - name: delete the task.done file if it's left over
+      file:
+         path: '/root/serverapi-test/{{server_api_test_folder}}/task.done'
+         state: absent
+    - stat:
+         path: '/root/serverapi-test/{{server_api_test_folder}}/task.running'
+      register: task_running
+    - debug:
+        msg: "task is running in the container"
+      when: task_running.stat.exists
+    - name: notify the node job to stop
+      file:
+         path: '/root/serverapi-test/{{server_api_test_folder}}/task.kill'
+         mode: 0644
+         state: touch
+      when: task_running.stat.exists
+    - name: synchronize remote serverapi folder
+      synchronize:
+          src: ../resources/{{server_api_test_folder}}
+          dest: '/root/serverapi-test/'
+    - name: Wait until the task has gracifully shutdown
+      wait_for:
+         path: '/root/serverapi-test/{{server_api_test_folder}}/task.done'
+         timeout: 300
+      when: task_running.stat.exists
+    - name: start the test
+      command: docker exec -d {{ docker_name }} bash -l -c "cd /root/app/{{server_api_test_folder}} && node server-api-test.js --app={{ host_name }} --timeout=15000 --async=false --delay=120000 > out.log &"

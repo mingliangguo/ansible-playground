@@ -1,0 +1,44 @@
+---
+
+- hosts: '{{host_name}}'
+  vars:
+    docker_name: server-running-test
+    server_api_test_folder: server-perf-test
+    server_api_test_file: '{{server_api_test_folder}}.tar.gz'
+    temp_folder: serverapi-test
+  tasks:
+    - name: find latest log directory
+      find:
+          paths: /root/{{ temp_folder }}/{{ server_api_test_folder }}/logs/
+          file_type: directory
+          age_stamp: mtime
+      register: found_folders
+    - debug:
+          msg: "Found folders are: {{ found_folders }}"
+    - name: Get latest folder
+      set_fact:
+          latest_folder_base_name: "{{ found_folders.files | sort(attribute='mtime',reverse=true) | map('extract', ['path']) | first }}"
+    - debug:
+          msg: "The latest folder base name is {{ latest_folder_base_name }}"
+    - name: generate the report
+      command: >-
+        docker exec -i {{docker_name}} bash -c
+        "cd /root/app/{{server_api_test_folder}} && node  --max_old_space_size=4096
+        server-api-report.js --logdir=logs/{{latest_folder_base_name}}"
+    - name: find the latest report
+      find:
+          paths: /root/{{ temp_folder }}/{{ server_api_test_folder }}/logs/{{ latest_folder_base_name }}
+          file_type: file
+          patterns: '*.xlsx'
+          age_stamp: mtime
+      register: generated_reports
+    - debug:
+          msg: "The reports found in folder are: {{ generated_reports }}"
+    - name: Get latest report
+      set_fact:
+          latest_report: "{{ generated_reports.files | sort(attribute='mtime',reverse=true) | first }}"
+    - debug:
+          msg: "The latest reportç is: {{ latest_report.path }}"
+    - name: copy report file to local
+      fetch: src={{latest_report.path}} dest=~/serverapi-report/
+      become: true

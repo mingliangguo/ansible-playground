@@ -1,0 +1,30 @@
+---
+# - hosts: aws-sandbox
+- hosts: "{{ host_name }}"
+  vars:
+      temp_folder: temp_war
+  tasks:
+      - name: install packages
+        yum:
+              name: "{{ item }}"
+              state: present
+        become: true
+        with_items:
+          -  vim
+          -  unzip
+          -  curl
+          -  byobu
+          -  bash-completion
+      - name: "enable byobu and other stuff"
+        command: "byobu-enable-prompt && byobu-enable"
+      - name: "clone fzf"
+        shell: "git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && yes | ~/.fzf/install"
+        args:
+            creates: ~/.fzf
+      - name: "enable auto completion for kubectl"
+        shell: |
+            echo "source <(kubectl completion bash)" >> ~/.bashrc
+      - name: "configure vim"
+        shell: "curl -fsSL https://raw.githubusercontent.com/mingliangguo/mydotfiles/master/minimal-vim.sh |bash"
+        args:
+            creates: ~/.vimrc
