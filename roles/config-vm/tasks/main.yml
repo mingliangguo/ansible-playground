@@ -1,0 +1,29 @@
+---
+- name: install packages
+  yum:
+        name:
+            -  vim
+            -  unzip
+            -  curl
+            -  byobu
+            -  bash-completion
+            -  jq
+            -  the_silver_searcher
+            -  bzip2
+        state: present
+  become: true
+- name: "enable byobu colorful prompt, the byobu-enable still has problems after this... need to fix it"
+  command: "byobu-enable-prompt && byobu-enable"
+- name: "clone fzf"
+  shell: "git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf && yes | ~/.fzf/install"
+  args:
+      creates: ~/.fzf
+- name: "enable auto completion for kubectl"
+  shell: |
+      echo "source <(kubectl completion bash)" >> ~/.bashrc
+- name: "enable vim editor in cli"
+  shell: |
+      echo "export EDITOR=vim" >> ~/.bashrc
+      echo "set -o vi" >> ~/.bashrc
+- name: "install nvm"
+  shell: "wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash"

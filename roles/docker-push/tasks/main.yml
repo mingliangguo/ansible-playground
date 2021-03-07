@@ -1,0 +1,19 @@
+########################################################################################################
+# tasks to tag a service docker image and push it to sandbox and replace the current deployed service
+########################################################################################################
+
+- name: extract the image id of the local docker image for {{app_name}}
+  local_action: shell docker images {{docker_registry}}/{{service_name}} --format {% raw %}{{.ID}}{% endraw %} | head -1
+  register: image_id_result
+- debug:
+      msg: "Image id is: {{ image_id_result.stdout }}"
+- set_fact: image_id={{ image_id_result.stdout }}
+- set_fact: 
+  tag: image_id
+  when: tag is not defined
+- debug:
+      msg: "image tag is: {{ tag }}"
+- name: tag the local docker image for {{app_name}}
+  local_action: shell docker tag {{ image_id }} {{ docker_registry }}/{{app_name}}:{{ tag }}
+- name: push the local docker image for {{app_name}}
+  local_action: shell docker push {{ docker_registry }}/{{ app_name }}:{{ image_id }}

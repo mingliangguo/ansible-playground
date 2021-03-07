@@ -1,0 +1,6 @@
+---
+
+user_id: cloudusr
+service_name: "service-{{app_name}}"
+docker_registry: "docker.local:5000"
+temp_deployment_folder: /home/{{user_id}}/temp_deployment/{{app_name}}

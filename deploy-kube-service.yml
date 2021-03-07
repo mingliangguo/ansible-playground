@@ -1,0 +1,33 @@
+# playbook to deploy/update a service to kubenettes sandbox
+# Basically what this playbook does is:
+# update the deployment.yml file for the given service and apply the updated deployment
+#
+# Usage:
+# 1) deploy several services in a batch, you need to edit the `with_items` section in this playbook to add the services you want to deploy.
+# ansible-playbook -i inventory.ini deploy-kube-service.yml
+# 2) deploy a single service by passing the service name in the command line
+# ansible-playbook -i inventory.ini deploy-kube-service.yml -e app=reaction -e kind=replicaset
+# ansible-playbook -i inventory.ini deploy-kube-service.yml -e app=chat -e kind=deploy
+---
+- hosts: "{{ host_name }}"
+  vars:
+      host_name: localhost
+      kind: deploy
+  tasks:
+      - name: Deploy single service to nexus
+        include_role:
+            name: docker-push-nexus
+        vars:
+          - app_name: "service-{{app}}"
+          - service_name: "test/service-{{app}}"
+        when: full is not defined
+
+
+      - name: Deploy non-standard service to nexus
+        include_role:
+            name: docker-push-nexus
+        vars:
+          - app_name: "{{app}}"
+          - service_name: "test/{{app}}"
+        when: full is defined
+

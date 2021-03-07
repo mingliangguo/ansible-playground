@@ -1,0 +1,26 @@
+---
+- name: Add Docker repo
+  get_url:
+    url: https://download.docker.com/linux/centos/docker-ce.repo
+    dest: /etc/yum.repos.d/docer-ce.repo
+  become: yes
+- name: Install a list of packages
+  become: true
+  yum:
+    name:
+      - container-selinux
+      - docker-ce
+    state: present
+    update_cache: true
+- name: "start docker"
+  command: "service docker start"
+  become: true
+- name: "configure docker permission"
+  command: "usermod -aG docker cloudusr"
+  become: true
+- name: "enable file permission"
+  command: "chmod 666 /var/run/docker.sock"
+  become: true
+- name: "install latest docker-compose"
+  command: "curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose"
+  become: true

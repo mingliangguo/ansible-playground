@@ -1,0 +1,6 @@
+---
+- src: nover.ohmyzsh
+- src: geerlingguy.nodejs
+- src: andrewrothstein.yarn
+- src: geerlingguy.docker
+- src: andrewrothstein.kind
