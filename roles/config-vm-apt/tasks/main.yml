@@ -51,24 +51,18 @@
     mode: 0755
   become: true
 
-- name: Download the argo-cli and install it
-  unarchive:
-    src: https://github.com/argoproj/argo/releases/download/v2.10.1/argo-linux-amd64.gz
-    dest: /usr/local/bin
-    remote_src: yes
-  become: true
-  ignore_errors: yes
-
+# - name: Download the argo-cli and install it
+#   unarchive:
+#     src: https://github.com/argoproj/argo/releases/download/v2.10.1/argo-linux-amd64.gz
+#     dest: /usr/local/bin
+#     remote_src: yes
+#   become: true
+#   ignore_errors: yes
+#
 - name: Check if kubectl is installed
   shell: command -v kubectl >/dev/null 2>&1
   register: is_kubectl_exist
   ignore_errors: yes
-
-- name: Install IBM Cloud CLI
-  shell: "curl -sL https://ibm.biz/idt-installer | bash"
-  ignore_errors: yes
-
-- debug: msg=" is_kubectl_exist.rc is {{ is_kubectl_exist.rc }}"
 
 - name: 'enable auto completion for kubectl'
   shell: |
