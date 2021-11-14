@@ -1,0 +1,18 @@
+---
+- hosts: "{{ host_name }}"
+  vars:
+      user_name: "{{user_name}}"
+      host_name: "{{host_name}}"
+  tasks:
+      - name: config ssh
+        include_role:
+            name: ssh
+ 
+      - name: configure dotfiles
+        include_role:
+            name: dotfiles
+
+      - name: disable root login
+        include_role:
+            name: base
+ 

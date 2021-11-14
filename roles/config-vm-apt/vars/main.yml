@@ -1,4 +1,0 @@
----
-
-host_name: "{{ host_name }}"
-kind_version: "v0.8.1"

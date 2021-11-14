@@ -1,0 +1,26 @@
+---
+
+- hosts: "{{host_name}}"
+  become: true
+  tasks:
+    - name: "Ensure group {{ user_name }} exists"
+      ansible.builtin.group:
+        name: "{{ user_name }}"
+        state: present
+
+    - name: add target user
+      user:
+        name: "{{ user_name }}"
+        comment: "{{ user_name }}"
+        groups: "{{ user_name }}"
+        append: yes
+        generate_ssh_key: yes
+        ssh_key_file: ".ssh/id_ed25519"
+        ssh_key_type: ed25519
+        state: present
+
+    - name: Add {{user_name}} to the sudoers
+      copy:
+        dest: "/etc/sudoers.d/devops"
+        content: "{{user_name}}  ALL=(ALL)  NOPASSWD: ALL"
+

@@ -1,0 +1,102 @@
+---
+- name: install my dot files
+  git:
+    repo: https://github.com/mingliangguo/mydotfiles.git
+    dest: ~/.mydotfiles
+    accept_hostkey: yes
+    force: true
+    update: no
+    version: HEAD
+
+
+- name: install zsh-autosuggestions plugin
+  git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+    dest: ~/.oh-my-zsh/plugins/zsh-autosuggestions
+    accept_hostkey: yes
+    force: true
+
+- name: install zsh-syntax-highlighting plugin
+  git:
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting
+    dest: ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
+    accept_hostkey: yes
+    force: true
+
+- name: install kube-ps1
+  git:
+    repo: https://github.com/jonmosco/kube-ps1.git
+    dest: ~/.kube-ps1
+    accept_hostkey: yes
+    force: true
+
+- name: install autojump
+  block:
+    - name: download diff-so-fancy
+      git:
+        repo: https://github.com/wting/autojump.git
+        dest: ~/temp/autojump
+        accept_hostkey: yes
+        force: true
+    - name: install autojump
+      shell: "cd ~/temp/autojump && python3 install.py"
+
+- name: install diff-so-fancy
+  block:
+    - name: download diff-so-fancy
+      get_url:
+        url: https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy
+        dest: /tmp/diff-so-fancy
+        mode: '+x'
+    - name: install diff-so-fancy
+      copy:
+        src: /tmp/diff-so-fancy
+        dest: /usr/local/bin
+        remote_src: yes
+        mode: '0755'
+        force: yes
+      become: true
+
+- name: create nvim config directory
+  file:
+    path: ~/.config/nvim
+    state: directory
+
+- name: link nvim config
+  file:
+    src: ~/.mydotfiles/nvim/{{ item }}
+    dest: /home/{{user_name}}/.config/nvim/{{ item }}
+    state: link
+    force: yes
+  loop:
+    - init.vim
+
+- name: symlink dotfiles
+  file:
+    src: "~/.mydotfiles/{{item}}"
+    path: "~/{{ item }}"
+    state: link
+    force: yes
+  loop:
+    - .bashrc
+    - .aliases
+    - .gitconfig
+    - .gitignore
+    - .gitattributes
+    - .inputrc
+    - .editorconfig
+    - .jsbeautifyrc
+    - .prettierrc
+    - .myprofile
+
+- name: copy zshrc
+  file:
+    src: ~/.mydotfiles/ubuntu/.zshrc
+    path: ~/.zshrc
+    state: link
+    force: yes
+
+- name: install neovim-python
+  ansible.builtin.pip:
+    name: neovim
+    extra_args: --user

@@ -4,3 +4,5 @@
 - src: andrewrothstein.yarn
 - src: geerlingguy.docker
 - src: andrewrothstein.kind
+- src: markosamuli.pyenv
+- src: markosamuli.linuxbrew

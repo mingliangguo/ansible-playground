@@ -37,6 +37,7 @@ ansible-galaxy install geerlingguy.nodejs
 ansible-galaxy install andrewrothstein.yarn
 ansible-galaxy install geerlingguy.docker
 ansible-galaxy install andrewrothstein.kind
+ansible-galaxy collection install community.general
 ```
 
 See how the role is used in `configure-vm.yml`
@@ -50,14 +51,37 @@ See how the role is used in `configure-vm.yml`
 
 
 1. Create a VM using vagrant (or any other tool to create a base vm)
-2. Create your own user (better not using root directly)
-
+2. Install `openssh-server` so a remote user can ssh to the host
+```bash
+sudo apt install openssh-server -y
+```
+3. Then use `configure-user.yml` playbook to configure a non-root user account on the vm, and it will ask you the password of your root account:
+or create your own user and then use the same playbook to add the user to the sudoer list
 ```bash
 adduser your_user_name
 ssh-copy-id -i path/to/certificate username@remote_host
 ```
 
-3. Enable sudo without passwordPermalink
+The steps above can actually be achieved via the following playbook:
+
+Once you get the vm setup, you can add the following entry to `sandbox.ini`
+
+```ini
+vm-host ansible_user=root ansible_host=vm-host
+```
+
+Then use `configure-user.yml` playbook to configure a non-root user account on the vm, and it will ask you the password of your root account:
+
+```bash
+ansible-playbook -i sandbox.ini configure-user.yml -e host_name=vm-host -e user_name=gary
+```
+
+*Note:* The detail information about the `gary-dev1` host is in the `sandbox.ini` file. Make sure password-less ssh and sudo are enabled on the host.
+
+
+## References
+
+### Enable sudo without passwordPermalink
 
 ```bash
 usermod -aG sudo username
@@ -79,24 +103,4 @@ sudo visudo
 user_name ALL=(ALL) NOPASSWD:ALL
 ```
 
-The steps above can actually be achieved via the following playbook:
 
-Once you get the vm setup, you can add the following entry to `sandbox.ini`
-
-```ini
-vm-host ansible_user=root ansible_host=vm-host
-```
-
-Then use `create-user.yaml` playbook to setup a non-root user account on the vm, and it will ask you the password of your root account:
-
-```bash
-ansible-playbook -vvv -i sandbox.ini create-user.yaml -e host_name=vm-host -e user_name=gary -e user_password=your_password --ask-pass  
-```
-
-And after that, you can add the host to `sandbox.ini` and run the next playbook to setup other software.
-
-```bash
-ansible-playbook -i sandbox.ini configure-vm.yml -e host_name=gary-dev1 -e user_name=gary
-```
-
-*Note:* The detail information about the `gary-dev1` host is in the `sandbox.ini` file. Make sure password-less ssh and sudo are enabled on the host.

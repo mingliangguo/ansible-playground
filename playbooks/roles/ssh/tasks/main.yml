@@ -1,0 +1,37 @@
+- name: copy ssh config file
+  copy:
+    src: ~/.ssh/config
+    dest: /home/{{user_name}}/.ssh/
+    mode:  '0600'
+- name: copy ssh public key files
+  copy:
+    src: ~/.ssh/id_rsa.pub
+    dest: /home/{{user_name}}/.ssh/
+    mode:  '0600'
+- name: copy ssh private key files
+  copy:
+    src: ~/.ssh/id_rsa
+    dest: /home/{{user_name}}/.ssh/
+    mode: '0600'
+- name: copy ssh public key file for github
+  copy:
+    src: ~/.ssh/id_rsa_gh.pub
+    dest: /home/{{user_name}}/.ssh/
+    mode:  '0600'
+- name: copy ssh private key file for github
+  copy:
+    src: ~/.ssh/id_rsa_gh
+    dest: /home/{{user_name}}/.ssh/
+    mode: '0600'
+
+- name: Disable root login over SSH
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
+  become: true
+  notify:
+    - restart sshd
+
+- name: Disable password login
+  lineinfile: dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
+  become: true
+  notify:
+    - restart sshd
