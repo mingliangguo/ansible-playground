@@ -23,6 +23,16 @@
     accept_hostkey: yes
     force: true
 
+- name: symlink sorin theme
+  file:
+    src: "{{ ansible_env.PWD }}/roles/dotfiles/files/{{ item }}"
+    path: "~/.oh-my-zsh/themes/{{ item }}"
+    state: link
+    follow: false
+    force: yes
+  loop:
+    - sorin.zsh-theme
+
 - name: install kube-ps1
   git:
     repo: https://github.com/jonmosco/kube-ps1.git
