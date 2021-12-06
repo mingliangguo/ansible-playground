@@ -1,0 +1,8 @@
+---
+- name: install packages
+  ansible.builtin.package:
+    name:
+      - ruby
+      - ruby-dev
+  become: true
+ 

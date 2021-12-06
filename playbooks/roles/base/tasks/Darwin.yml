@@ -1,0 +1,63 @@
+---
+
+- name: make sure packages are installed
+  community.general.homebrew:
+    name:
+      - coreutils
+      - fzf
+      - gnu-sed
+      - jq
+      - awscli
+      - pass
+      - gpg
+      - libyaml
+      - htop
+      - bat
+      - prettyping
+      - ranger
+      - fd
+      - binutils
+      - cmake
+      - tree
+      - watch
+      - jump
+      - tmux
+      - byobu
+      - reattach-to-user-namespace
+      - httpie
+      - http-prompt
+      - icdiff
+      - diff-so-fancy
+      - fpp
+      - rg
+      - tldr
+      - cheat
+      - prettier
+      - stern
+      - mkdocs
+    state: present
+
+- name: make sure casks are installed
+  community.general.homebrew_cask:
+    name:
+      - alfred
+      - bettertouchtool
+      - divvy
+      - bartender
+      - disk-inventory-x
+      - flux
+      - dash
+      - flycut
+      - squirrel
+      - macdown
+      - keepassxc
+      - gas-mask
+      - itsycal
+      - shortcat
+      - karabiner-elements
+      - balenaetcher
+      - istat-menus
+      - daisydisk
+      - temurin
+    state: present
+

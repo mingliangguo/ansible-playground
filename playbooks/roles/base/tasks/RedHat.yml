@@ -1,0 +1,37 @@
+---
+
+- name: Update all installed packages using YUM module
+  yum:
+    name: '*'
+    state: latest
+    update_cache: yes
+    update_only: yes
+  become: true
+
+- name: Upgrade all packages
+  dnf:
+    name: "*"
+    state: latest
+  become: true
+
+- name: Autoremove unneeded packages installed as dependencies
+  dnf:
+    autoremove: yes
+  become: true
+
+- name: install packages
+  ansible.builtin.package:
+    name:
+      - llvm
+      - ca-certificates
+      - zsh
+      - util-linux-user
+  become: true
+
+- name: install dnf packages
+  dnf:
+    name: 
+      - java-11-openjdk
+    state: latest
+  become: true
+

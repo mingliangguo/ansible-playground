@@ -4,6 +4,22 @@
 
 The ansible playbook helps you create and configure a base vm environment. So you can connect this playbook with your normal dockerBuild task and it helps automate the rest of steps to tag/deploy the image.
 
+## Some techniques used
+
+- Use the generic OS package manager [pakcage](https://docs.ansible.com/ansible/latest/collections/ansible/builtin/package_module.html) module to install generic packages.
+
+- Separate OS-specific packages into different files and include them dynamically.
+
+```yaml
+- import_tasks: install_darwin.yml
+  when: ansible_facts['os_family'] == "Darwin"
+- import_tasks: install_linux.yml
+  when: ansible_facts['os_family'] == "ArchLinux"
+- import_tasks: config.yml
+```
+
+- Organize related installation and configuration as roles
+
 ## Prerequisites
 
 Make sure you have `ansible` installed, and you are connected to p2 environment, and the `kubectl` works for deployment updates.
@@ -54,6 +70,9 @@ See how the role is used in `configure-vm.yml`
 2. Install `openssh-server` so a remote user can ssh to the host
 ```bash
 sudo apt install openssh-server -y
+# the following might be needed on fedora
+sudo systemctl enable sshd
+sudo systemctl restart sshd
 ```
 3. Then use `configure-user.yml` playbook to configure a non-root user account on the vm, and it will ask you the password of your root account:
 or create your own user and then use the same playbook to add the user to the sudoer list
@@ -79,8 +98,6 @@ ansible-playbook -i sandbox.ini configure-user.yml -e host_name=vm-host -e user_
 *Note:* The detail information about the `gary-dev1` host is in the `sandbox.ini` file. Make sure password-less ssh and sudo are enabled on the host.
 
 
-## References
-
 ### Enable sudo without passwordPermalink
 
 ```bash
@@ -103,4 +120,7 @@ sudo visudo
 user_name ALL=(ALL) NOPASSWD:ALL
 ```
 
+## References
+
+- [Next level dotfiles with Ansible](https://snow-dev.com/posts/next-level-dotfiles-with-ansible.html)
 

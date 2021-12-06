@@ -1,0 +1,13 @@
+---
+- include_tasks: "{{ ansible_os_family }}.yml"
+
+- name: Install latest available version of rake
+  community.general.gem:
+    name: rake
+    state: latest
+
+- name: Install latest available version of budnler
+  community.general.gem:
+    name: budnler
+    state: latest
+

@@ -1,0 +1,11 @@
+---
+
+- name: make sure casks are installed
+  community.general.homebrew_cask:
+    name:
+      - intellij-idea-ce
+      - sublime-text
+      - visual-studio-code
+      - beyond-compare
+    state: present
+

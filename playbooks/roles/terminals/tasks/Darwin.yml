@@ -1,0 +1,12 @@
+---
+
+- name: make sure casks are installed
+  community.general.homebrew_cask:
+    name:
+      - iterm2
+      - hyper
+      - terminus
+      - kitty
+      - alacrity
+    state: present
+

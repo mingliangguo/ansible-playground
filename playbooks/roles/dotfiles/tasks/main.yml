@@ -24,14 +24,9 @@
     force: true
 
 - name: symlink sorin theme
-  file:
-    src: "{{ ansible_env.PWD }}/roles/dotfiles/files/{{ item }}"
-    path: "~/.oh-my-zsh/themes/{{ item }}"
-    state: link
-    follow: false
-    force: yes
-  loop:
-    - sorin.zsh-theme
+  copy:
+    src: "{{ role_path }}/files/sorin.zsh-theme"
+    dest: "~/.oh-my-zsh/themes/sorin.zsh-theme"
 
 - name: install kube-ps1
   git:

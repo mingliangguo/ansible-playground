@@ -1,0 +1,14 @@
+---
+
+- name: make sure casks are installed
+  community.general.homebrew_cask:
+    name:
+      - firefox
+      - google-chrome
+      - vivaldi
+      - chromium
+      - opera
+      - microsoft-edge
+      - brave-browser
+    state: present
+

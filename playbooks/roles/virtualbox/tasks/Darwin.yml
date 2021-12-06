@@ -1,0 +1,11 @@
+---
+
+- name: make sure casks are installed
+  community.general.homebrew_cask:
+    name:
+      - virtualbox
+      - room/cask/virtualbox-extension-pack
+      - room/cask/vagrant
+      - room/cask/vagrant-manager
+    state: present
+
