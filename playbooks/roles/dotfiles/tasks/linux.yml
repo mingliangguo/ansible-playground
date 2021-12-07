@@ -1,0 +1,7 @@
+---
+
+- name: copy sorin theme
+  copy:
+    src: "{{ role_path }}/files/sorin.zsh-theme"
+    dest: "~/.oh-my-zsh/themes/sorin.zsh-theme"
+

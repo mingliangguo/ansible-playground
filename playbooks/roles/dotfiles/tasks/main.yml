@@ -1,4 +1,8 @@
 ---
+
+- import_tasks: linux.yml
+  when: ansible_facts['os_family'] != "Darwin"
+
 - name: install my dot files
   git:
     repo: https://github.com/mingliangguo/mydotfiles.git
@@ -22,11 +26,6 @@
     dest: ~/.oh-my-zsh/plugins/zsh-syntax-highlighting
     accept_hostkey: yes
     force: true
-
-- name: symlink sorin theme
-  copy:
-    src: "{{ role_path }}/files/sorin.zsh-theme"
-    dest: "~/.oh-my-zsh/themes/sorin.zsh-theme"
 
 - name: install kube-ps1
   git:

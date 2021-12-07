@@ -22,10 +22,11 @@
 - name: install packages
   ansible.builtin.package:
     name:
+      - zsh
       - llvm
       - ca-certificates
-      - zsh
       - util-linux-user
+      - yarnpkg
   become: true
 
 - name: install dnf packages
@@ -34,4 +35,3 @@
       - java-11-openjdk
     state: latest
   become: true
-

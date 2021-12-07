@@ -13,6 +13,7 @@
     name:
       - software-properties-common
       - build-essential
+      - zsh
       - libssl-dev
       - libffi-dev
       - zlib1g-dev
@@ -28,3 +29,5 @@
       - gradle
   become: true
 
+- name: configure zsh as default shell
+  command: "chsh -s $(which zsh)"
