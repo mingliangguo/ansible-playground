@@ -12,7 +12,6 @@
       ansible.builtin.package:
         name:
           - zsh
-          - vim
      
     - name: add target user
       user:

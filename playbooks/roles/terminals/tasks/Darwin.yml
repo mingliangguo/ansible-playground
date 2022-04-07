@@ -8,5 +8,6 @@
       - terminus
       - kitty
       - alacrity
+      - wezterm
     state: present
 

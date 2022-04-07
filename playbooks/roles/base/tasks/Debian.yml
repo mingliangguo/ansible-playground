@@ -29,5 +29,5 @@
       - gradle
   become: true
 
-- name: configure zsh as default shell
-  command: "chsh -s $(which zsh)"
+# - name: configure zsh as default shell
+#   command: "chsh -s $(which zsh)"

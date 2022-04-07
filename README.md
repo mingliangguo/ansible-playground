@@ -89,11 +89,15 @@ Once you get the vm setup, you can add the following entry to `sandbox.ini`
 vm-host ansible_user=root ansible_host=vm-host
 ```
 
-Then use `configure-user.yml` playbook to configure a non-root user account on the vm, and it will ask you the password of your root account:
+Then use `configure-user.yml` playbook to configure a non-root user account on the vm, and it will ask you the password of your root account (or supply the password for the non-root user):
 
 ```bash
-ansible-playbook -i sandbox.ini configure-user.yml -e host_name=vm-host -e user_name=gary
+ansible-playbook -i sandbox.ini playbooks/configure-user.yml -e host_name=vm-host -e user_name=gary  -kK
+ansible-playbook -i sandbox.ini playbooks/configure-user.yml -e host_name=vm-host -e user_name=gary  --extra-vars "ansible_sudo_pass=yourPassword"
 ```
+
+- `-k`, --ask-pass: ask for connection password
+- `-K`, --ask-become-pass: ask for privilege escalation password
 
 *Note:* The detail information about the `gary-dev1` host is in the `sandbox.ini` file. Make sure password-less ssh and sudo are enabled on the host.
 
@@ -119,6 +123,14 @@ sudo visudo
 # Add the following line to the sudoers file
 user_name ALL=(ALL) NOPASSWD:ALL
 ```
+
+## VirtualBox on Windows
+
+Here are some tips to make sure virtualbox works properly in Windows.
+
+- disable hyper-v
+- use `ICH9` chipset
+- disable `PAE/NX`
 
 ## References
 
