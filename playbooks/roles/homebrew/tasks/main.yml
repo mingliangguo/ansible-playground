@@ -16,6 +16,6 @@
     upgrade_options: ignore-pinned
 
 - community.general.homebrew:
-    name: ["htop", "fzf", "pyenv", "fpp", "stern", "kubectl", "nvm", "yarn", "kubectx", "kube-ps1"]
+    name: ["htop", "fzf", "pyenv", "zoxide", "jenv", "fpp", "stern", "kubectl", "nvm", "yarn", "kubectx", "kube-ps1"]
     state: present
     path: "/home/linuxbrew/.linuxbrew/bin"
