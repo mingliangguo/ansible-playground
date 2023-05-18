@@ -124,6 +124,31 @@ sudo visudo
 user_name ALL=(ALL) NOPASSWD:ALL
 ```
 
+## Enable TouchID for Sudo
+
+edit `/etc/pam.d/sudo` file and add the following line at the beginning of the file:
+
+```bash
+auth sufficient pam_tid.so
+```
+
+The full file might look like this:
+
+```bash
+# sudo: auth account password session
+auth       sufficient     pam_tid.so
+auth       sufficient     pam_smartcard.so
+auth       required       pam_opendirectory.so
+account    required       pam_permit.so
+password   required       pam_deny.so
+session    required       pam_permit.so
+```
+
+Check this SO [question](https://apple.stackexchange.com/questions/259093/can-touch-id-on-mac-authenticate-sudo-in-terminal) for reference.
+
+Note: There is a special configuration for iTerm, also mentioned in the above answers.
+
+
 ## VirtualBox on Windows
 
 Here are some tips to make sure virtualbox works properly in Windows.
